@@ -3,7 +3,7 @@ NÃO ESTA FUNCIONANDO
 *****************************************************
 
 
-- Para compilar basta executar make contido no respositorio
+- Para compilar basta executar makefile contido no respositorio
 
 - Depois exetucar "./main".
 
