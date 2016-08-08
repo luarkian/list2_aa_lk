@@ -3,50 +3,57 @@
 
 #include "questao5.h"
 
-List* inserList(List *L,int valor)
+void inserList(List *L,int valor,	int chave)
 {
 	List* no =(List*)malloc(sizeof(List));
 	if(L == NULL)
 	{
 		no->val= valor;
-		no->ant= NULL;
-		no->prox= NULL;	
+		no->prox= NULL;
+		no->chave= chave;	
 
-		return no;
+		L = no;
 	}
 	else
 	{
 		no->val = valor;
-		no->ant = NULL;
-		no->prox = L;
-		L->ant = no;
-	return no;	
+		no->chave= chave;
+		L->prox = no;	
 	}	
 }
 
 void remocList(List *L,int valor)
 {
 	List* aux;
-	List* aux1;
-	List* aux2;
-	for(aux = L; aux != NULL; aux->L->prox)
+	List* aux1;			
+	if(L->val == valor)
+		return L->prox;
+	else
 	{
-		if(aux->val == valor)
+		aux = L;
+		aux1= L->prox;
+		
+		while(aux1 != NULL)
 		{
-				aux1= aux->ant;
-				aux2= aux->prox;
-				
-				aux1->prox = aux2;
-				aux2->ant = aux1;
-				
-				free(aux);	
-		}
+			if(aux1->val == valor)
+			{
+				aux->prox = aux1->prox;
+				free(aux1);
+				return L; 			
+			}
+			else
+			{
+				aux = aux1;
+				aux1= aux->prox;
+			}
+		}	
+	}
 }
 
 List* busca(List *L, int valor)
 {
 	List* aux;
-	for(aux = L; aux != NULL; aux->L->prox)
+	for(aux = L; aux != NULL; aux = L->prox)
 	{
 		if(aux->val == valor)
 		{
@@ -57,7 +64,7 @@ List* busca(List *L, int valor)
 void imprList(List *L, int valor)
 {
 	List* aux;
-	for(aux = L; aux != NULL; aux->L->prox)
+	for(aux = L; aux != NULL; aux = L->prox)
 	{
 		printf(" %d -",aux->val);
 	}
@@ -69,7 +76,7 @@ void imprList(List *L, int valor)
 	Disponivel em https://www.youtube.com/playlist?list=PL8iN9FQ7_jt6XjYc0H01AVJoCePsiSNEq
 */
 
-int cor(Arn *arv)
+int cor(Arv *arv)
 {
 	if(arv == NULL)
 	{
@@ -80,7 +87,7 @@ int cor(Arn *arv)
 
 } 
 
-void trocarCor(Arn *arv)
+void trocarCor(Arv *arv)
 {
 	arv->cor = !arv->cor;
 	if(arv->esq != NULL)
@@ -94,9 +101,9 @@ void trocarCor(Arn *arv)
 }
 
 //Rotacao dir
-Arn* rDir(Arn *arv)
+Arv* rDir(Arv *arv)
 {
-	Arn* aux = arv->dir;
+	Arv* aux = arv->dir;
 	arv->esq = aux->dir;
 	aux->dir = arv;
 	
@@ -107,9 +114,9 @@ Arn* rDir(Arn *arv)
 }
 
 //Rotacao esq
-Arn* rEsq(Arn *arv)
+Arv* rEsq(Arv *arv)
 {
-	Arn* aux = arv->dir;
+	Arv* aux = arv->dir;
 	arv->dir = aux->esq;
 	aux->esq = arv;
 	
@@ -119,7 +126,7 @@ Arn* rEsq(Arn *arv)
 	return aux;
 }
 
-Arn* moveEsqRed(Arn* arv)
+Arv* moveEsqRed(Arv* arv)
 {
 	trocarCor(arv);
 	if(cor(arv->dir->esq) == RED)
@@ -131,29 +138,29 @@ Arn* moveEsqRed(Arn* arv)
 	return arv;
 }
 
-Arn* moveDirRed(Arn* arv)
+Arv* moveDirRed(Arv* arv)
 {
 	trocarCor(arv);
 	if(cor(arv->esq->esq) == RED)
 	{
-		H = rDir(arv);
+		arv = rDir(arv);
 		trocaCor(arv);
 	}
 	return arv;
 }
 
-int inserir(Arn* raiz, int valor)
+int inserir(Arv* raiz, int valor, int chave)
 {
-	int resp
-	*raiz = auxInsere(raiz, valor,&resp);
-	if((*raiz) == NULL)
+	int resp;
+	raiz = auxInsere(raiz, valor,&resp,&chave);
+	if(raiz == NULL)
 	{
-		(*raiz)->cor= BLACK;
+		raiz->cor= BLACK;
 	}
 	return resp;
 }
 
-Arn* auxInsere(Arn* no, int valor,int* resp)
+Arv* auxInsere(Arv* no, int valor,int* resp, int *chave)
 {
 	if(no == NULL)
 	{
@@ -163,26 +170,27 @@ Arn* auxInsere(Arn* no, int valor,int* resp)
 			*resp = 0;
 			return NULL;
 		}
-		novo->valor = valor;
+		novo->val = valor;
+		novo->chave = *chave;
 		novo->esq = NULL;
 		novo->dir = NULL;
 		novo->cor = RED;
 		*resp = 1;
 		return novo;
 	}
-	if(valor == no->valor)
+	if(valor == no->val)
 	{
 		*resp = 0;	
 	}
 	else
 	{
-		if(valor > no->infor)
+		if(valor > no->val)
 		{
-			no->dir = auxInsere(no->dir,valor,resp);
+			no->dir = auxInsere(no->dir,valor,resp, chave);
 		}
 		else
 		{
-			no->esq = auxInsere(no->esq,valor,resp);
+			no->esq = auxInsere(no->esq,valor,resp, chave);
 		}
 	}
 
@@ -209,7 +217,7 @@ hashList* criarHashList(int TB_SIZE)
 	{
 		int i;
 		h->TB_SIZE = TB_SIZE;
-		h->no = (hashList**) malloc(TB_SIZE * sizeof(hashList)); 
+		h->no = (hashList*) malloc(TB_SIZE * sizeof(hashList)); 
 		if(h->no == NULL)
 		{
 			free(h);
@@ -231,7 +239,7 @@ hashArv* criarHashArv(int TB_SIZE)
 	{
 		int i;
 		h->TB_SIZE = TB_SIZE;
-		h->no = (hashArv**) malloc(TB_SIZE * sizeof(hashArv)); 
+		h->no = (hashArv*) malloc(TB_SIZE * sizeof(hashArv)); 
 		if(h->no == NULL)
 		{
 			free(h);
@@ -279,3 +287,21 @@ void liberaHashList(hashList* h)
 		free(h);
 	}
 }
+
+int chaveDiv(int chave, int TB_SIZE)
+{
+	return (chave & 0x7FFFFFFF % TB_SIZE);
+}
+
+int insereHashList(hashList* H, List* L)
+{
+	if(H ==NULL || H->qt == H->TB_SIZE)
+		return 0;
+	
+}
+
+int insereHashArv(hashArv* H, Arv* A)
+{
+
+}
+

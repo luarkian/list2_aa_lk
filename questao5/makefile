@@ -5,7 +5,7 @@ main.o: main.c
 	gcc -c main.c
 
 questao5.o:	questao5.c	questao5.h
-	gcc -c ordenacao.c
+	gcc -c questao5.c
 
 clean:
 	rm *.o
